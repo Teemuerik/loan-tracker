@@ -1,6 +1,8 @@
 // In this program, all loans are calculated with the basic Finnish system.
 // All months have 30 days, and the year has exactly 360 days in this system.
 
+use rust_decimal::Decimal;
+
 const YEAR_DAYS: i32 = 360;
 const MONTH_DAYS: i32 = 30;
 
@@ -21,9 +23,31 @@ impl LoanDate {
     }
 }
 
-struct LoanState {
+struct LoanBalance {
+    // The date which this has this balance.
+    timestamp: LoanDate,
+    // The principal at this date, after all payments.
     principal_cents: u64,
 }
+
+struct LoanPaymentSnapshot {
+    // The date which this snapshot represents.
+    timestamp: LoanDate,
+    // The balance after the last payment before this snapshot.
+    starting_balance: LoanBalance,
+    // The calculated interest rate over the last payment period.
+    interest_rate: Decimal,
+    // The amount of accrued interest over the last payment period.
+    accrued_interest: Decimal,
+    // The minimum amount to be paid at this moment.
+    min_payment_cents: u64,
+    // The possible extra payment added by the user at this moment.
+    extra_payment_cents: u64,
+    // The payment fees at this moment.
+    payment_fees_cents: u64,
+}
+
+// TODO: Remember to implement paid getter in LoanPaymentSnapshot impl.
 
 struct LoanContract {}
 
